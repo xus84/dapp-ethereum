@@ -1,71 +1,113 @@
-const addressContract = '';
+const addressContract = "";
 
 const abi = [];
 
 // toast tool
 
-
-let web3;
+/* let web3;
 let account;
-let MyCoin;
+let MyCoin; */
 
-function init() {
-    if( typeof window.ethereum !== 'undefined') {
-        const metamaskbtn = document.getElementById('enableEthereumButton');
-        metamaskbtn.classList.remove('d-none');
+let accounts;
+let myCoin;
+let web3;
 
-        metamaskbtn.addEventListener('click', async() => {
-            const accounts = await ethereum.request({ method: 'eth_requestAccounts '})
-            account = accounts[0];
+window.addEventListener("DOMContentLoaded", () => {
+  console.log("dapp");
+  if( typeof window.ethereum !== 'undefined') {
+    const metamaskbtn = document.getElementById('enableEthereumButton');
+    metamaskbtn.classList.remove('d-none');
 
-            metamaskbtn.classList.add('d-none');
-            document.getElementById('accountSelected').innerHTML = account;
-            document.getElementById('accountSelected').classList.add('border');
 
-            detectChangeAccount();
-            contract();
+    metamaskbtn.addEventListener('click', async () => {
+        console.log('get wallet')
+        accounts = await window.ethereum.request( { method: 'eth_requestAccounts'} )
+    })
 
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('main').classList.remove('d-none')
+  }
+  const btnGetBalance = document.getElementById('btnGetBalance');
+  const address = document.getElementById('addressGetBalance');
+  const valueSpan = document.getElementById('balance');
+  let value = address.value;
 
-        })
-    }
+  btnGetBalance.addEventListener('click', async ()=> {
+   /*  balance = parseInt(balance);
+    balance = balance / Math.pow(10, 18)
+    valueSpan.innerHTML = balance; */
+   let balance =  await window.ethereum.request({ method: 'eth_getBalance', 
+   
+    params: [
+        accounts[0]
 
-    function contract () {
-        web3 = new Web3(window.ethereum);
-        MyCoin = new web3.eth.contract(abi, addressContract);
 
-        interact()
-    }
+    ] }
+   
+    ).catch((err) => 
+    console.log(err))
+    
+  }) 
 
-   function interact() {
-       const btnGetBalance = document.getElementById('btnGetBalance');
-       btnGetBalance.addEventListener('click', ()=> {
-           const address = document.getElementById('addressGetBalance');
-           const value = address.value;
+     
+     value = parseInt(value)
+     value = value / Math.pow(10, 18)
+     console.log(value)
+     valueSpan.innerHTML = value   
+});
 
-           MyCoin.methods.balanceOf(value).call().then(res => {
-               const amount = web3.utils.fromWei(res, 'ether');
-               const valueSpan = document.getElementById('balance');
-               valueSpan.innerHTML = amount;
-           })
-       })
+/* if( typeof window.ethereum !== 'undefined') {
+    const metamaskbtn = document.getElementById('enableEthereumButton');
+    metamaskbtn.classList.remove('d-none');
 
-       const transfer = document.getElementById('transferir');
-       transfer.addEventListener('click', ()=> {
-           const address = document.getElementById('addressBeneficiaria');
-           const addressValue = address.value;
+    metamaskbtn.addEventListener('click', async() => {
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts '})
+        account = accounts[0];
 
-           const amount = document.getElementById('cantidad');
-           const amountString = amount.value.toString();
-           const amountTransfer = web3.utils.toWei(amountString, 'ether');
+        metamaskbtn.classList.add('d-none');
+        document.getElementById('accountSelected').innerHTML = account;
+        document.getElementById('accountSelected').classList.add('border');
 
-           MyCoin.methods.transfer(addressValue, amountTransfer).send({ from: account }).then(res => {
-               address.value = '';
-               amount.value = 0;
-                     })
-      })
-   } 
+        detectChangeAccount();
+        contract();
+
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('main').classList.remove('d-none')
+
+    })
 }
 
-window.onload = init();
+function contract () {
+    web3 = new Web3(window.ethereum);
+    MyCoin = new web3.eth.contract(abi, addressContract);
+
+    interact()
+}
+
+function interact() {
+   const btnGetBalance = document.getElementById('btnGetBalance');
+   btnGetBalance.addEventListener('click', ()=> {
+       const address = document.getElementById('addressGetBalance');
+       const value = address.value;
+
+       MyCoin.methods.balanceOf(value).call().then(res => {
+           const amount = web3.utils.fromWei(res, 'ether');
+           const valueSpan = document.getElementById('balance');
+           valueSpan.innerHTML = amount;
+       })
+   })
+
+   const transfer = document.getElementById('transferir');
+   transfer.addEventListener('click', ()=> {
+       const address = document.getElementById('addressBeneficiaria');
+       const addressValue = address.value;
+
+       const amount = document.getElementById('cantidad');
+       const amountString = amount.value.toString();
+       const amountTransfer = web3.utils.toWei(amountString, 'ether');
+
+       MyCoin.methods.transfer(addressValue, amountTransfer).send({ from: account }).then(res => {
+           address.value = '';
+           amount.value = 0;
+                 })
+  })
+} 
+ */
